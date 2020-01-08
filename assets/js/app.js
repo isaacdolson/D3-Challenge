@@ -47,38 +47,51 @@ d3.csv("assets/data/data.csv").then(function(data){
     chartGroup.append('g')
         .call(yAxis);
 
-    var circlesGroup = chartGroup.selectAll("circle")
-        .data(data)
-        .enter()
-        .append("circle")
-        .attr("cx", d => xScale(d.income))
-        .attr("cy", d => yScale(d.obesity))
-        .attr("r", "15")
-        .attr("fill", "lightblue")
-        .attr("opacity", ".75")
-        .text(d=> d.abbr)
-
-    var textGroup = chartGroup.selectAll("text")
-        .data(data)
-        .enter()
-        .append("text")
-        .attr("x", d => xScale(d.income))
-        .attr("y", d => yScale(d.obesity))
-        .attr("text-anchor", "middle")
-        .attr("fill", "grey")
-        .text(d => d.abbr)
-
         var toolTip = d3.select("#scatter")
-            .append("div")
-            .attr("class", "tooltip")
-            // .offset([80, -60])
+        .append("div")
+        .attr("class", "tooltip")
+        .style("display", "none")
+    
+    try{
+        var circlesGroup = chartGroup.selectAll("circle")
+            .data(data)
+            .enter()
+            .append("circle")
+            .attr("cx", d => xScale(d.income))
+            .attr("cy", d => yScale(d.obesity))
+            .attr("r", "15")
+            .attr("fill", "lightblue")
+            .attr("opacity", ".75")
+            .text(d=> d.abbr)
+
+        //not starting at the beginning, not sure what to do about that.
+        //unless I need to make a copy of the data, so that I have unmessed with data...
+        var textGroup = chartGroup.selectAll("text")
+            .data(data)
+            .enter()
+            .append("text")
+            .attr("x", d => xScale(d.income))
+            .attr("y", d => yScale(d.obesity))
+            .attr("text-anchor", "middle")
+            .attr("fill", "grey")
+            .text(d => d.abbr)
+    }
+    catch(err){
+        console.log("Error in ploting")
+    };
+    try{
+        // var toolTip = d3.select("#scatter")
+        //     .append("div")
+        //     .attr("class", "tooltip")
+        //     .style("display", "none")
             // .html(function(d){
             //     return (`State ${d.state}`)
             // })
         
-        chartGroup.call(toolTip);
+        // chartGroup.call(toolTip);
         circlesGroup.call(toolTip);
 
+        //trying to get tool tips to work.
         circlesGroup.on("mouseover", function(d){
             toolTip.style("display", "block");
             toolTip.html(`State: ${d.state}`)
@@ -89,7 +102,9 @@ d3.csv("assets/data/data.csv").then(function(data){
         .on("mouseout", function(data){
             toolTip.style("display", "none");
         });
-
+    } catch(err){
+        console.log("Error in tool Tip")
+    }
         // textGroup.on("click", function(d){
         //     toolTip.show(d, this);
         // })
@@ -97,6 +112,7 @@ d3.csv("assets/data/data.csv").then(function(data){
         //     toolTip.hide(data);
         // });
 
+        //the axis labels.
         var labelsGroup = chartGroup.append("text")
             .attr("transform", `translate(${chartWidth / 2}, ${chartHeight + 20})`)
             .classed("axis-text", true)
