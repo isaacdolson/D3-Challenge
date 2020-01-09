@@ -53,6 +53,7 @@ d3.csv("assets/data/data.csv").then(function(data){
         .style("display", "none")
     
     try{
+        var circles = svg.selectAll("g").data(data).enter();
         var circlesGroup = chartGroup.selectAll("circle")
             .data(data)
             .enter()
@@ -66,45 +67,72 @@ d3.csv("assets/data/data.csv").then(function(data){
 
         //not starting at the beginning, not sure what to do about that.
         //unless I need to make a copy of the data, so that I have unmessed with data...
-        var textGroup = chartGroup.selectAll("text")
-            .data(data)
-            .enter()
-            .append("text")
-            .attr("x", d => xScale(d.income))
-            .attr("y", d => yScale(d.obesity))
+        var texts = svg.selectAll("g").data(data).enter();
+        var abbrs = data.map(d => d.abbr);
+        console.log(abbrs)
+        var count = 0;
+        // circles.selectAll("text")
+        //     .data(data)
+        //     .enter()
+        //     .append("text")
+        //     .attr("x", d => xScale(d.income))
+        //     .attr("y", d => yScale(d.obesity))
+        //     .attr("text-anchor", "middle")
+        //     .attr("fill", "grey")
+        //     .text(d=>d.abbr)
+        // var textGroup = circles.selectAll("text")
+        //     .data(data)
+        //     .enter()
+        //     .append("text")
+        //     // .merge()
+        //     .attr("x", d => xScale(income[count]))
+        //     .attr("y", d => yScale(obesity[count]))
+        //     .attr("text-anchor", "middle")
+        //     .attr("fill", "grey")
+        //     .text(x => {
+        //         // count += 1;
+        //         return count++ + ":" + x.abbr;
+            // })
+            //lets see if this can work without data binding...
+            //looks like I can, still feels like I should use data binding.
+        for ( var i = 0; i < data.length; i++){
+            chartGroup.append("text")
+            .attr("x", d => xScale(data[i].income))
+            .attr("y", d => yScale(data[i].obesity))
             .attr("text-anchor", "middle")
             .attr("fill", "grey")
-            .text(d => d.abbr)
+            .text(x => data[i].abbr)
+        }
     }
     catch(err){
         console.log("Error in ploting")
     };
-    try{
-        // var toolTip = d3.select("#scatter")
-        //     .append("div")
-        //     .attr("class", "tooltip")
-        //     .style("display", "none")
-            // .html(function(d){
-            //     return (`State ${d.state}`)
-            // })
+    // try{
+    //     // var toolTip = d3.select("#scatter")
+    //     //     .append("div")
+    //     //     .attr("class", "tooltip")
+    //     //     .style("display", "none")
+    //         // .html(function(d){
+    //         //     return (`State ${d.state}`)
+    //         // })
         
-        // chartGroup.call(toolTip);
-        circlesGroup.call(toolTip);
+    //     chartGroup.call(toolTip);
+    //     circlesGroup.call(toolTip);
 
-        //trying to get tool tips to work.
-        circlesGroup.on("mouseover", function(d){
-            toolTip.style("display", "block");
-            toolTip.html(`State: ${d.state}`)
-            .style("left", d3.event.pageX + "px")
-            .style("top", d3.event.pageY + "px");
+    //     //trying to get tool tips to work.
+    //     circlesGroup.on("mouseover", function(d){
+    //         toolTip.style("display", "block");
+    //         toolTip.html(`State: ${d.state}`)
+    //         .style("left", d3.event.pageX + "px")
+    //         .style("top", d3.event.pageY + "px");
 
-        })
-        .on("mouseout", function(data){
-            toolTip.style("display", "none");
-        });
-    } catch(err){
-        console.log("Error in tool Tip")
-    }
+    //     })
+    //     .on("mouseout", function(data){
+    //         toolTip.style("display", "none");
+    //     });
+    // } catch(err){
+    //     console.log("Error in tool Tip")
+    // }
         // textGroup.on("click", function(d){
         //     toolTip.show(d, this);
         // })
